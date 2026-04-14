@@ -32,7 +32,7 @@ FONT_BLACK = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
 FONT_BOLD = "/System/Library/Fonts/AppleSDGothicNeo.ttc"
 
 # 위 폰트가 없을 경우 대체 경로 (Noto Sans 설치 시)
-FONT_BLACK_ALT = "/Library/Fonts/NotoSansCJKkr-Black.otf"
+FONT_BLACK_ALT = "/Users/chojoongchan/Library/Fonts/NotoSansCJKkr-Black.otf"
 FONT_BOLD_ALT = "/Library/Fonts/NotoSansCJKkr-Bold.otf"
 
 # 베이스 이미지 경로 (이 스크립트와 같은 폴더)
