@@ -13,25 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Python 설치
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-
-      - name: Pillow 설치
+      - name: Python 및 Pillow 설치
         run: pip install Pillow
-
-      - name: 한글 폰트 설치
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk
-          echo "=== 설치된 폰트 목록 ==="
-          find /usr/share/fonts -name "*Noto*CJK*" -o -name "*noto*cjk*" | head -20
-          fc-list | grep -i "cjk" | head -10
 
       - name: GIF 생성
         run: |
-          cd $GITHUB_WORKSPACE
           TOMORROW=$(TZ=Asia/Seoul date -d "+1 day" +"%m %d")
           MONTH=$(echo $TOMORROW | awk '{print int($1)}')
           DAY=$(echo $TOMORROW | awk '{print int($2)}')
