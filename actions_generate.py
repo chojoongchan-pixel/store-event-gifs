@@ -1,10 +1,28 @@
 #!/usr/bin/env python3
-import sys
+import sys, glob
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
-FONT_PATH = "/usr/share/fonts/opentype/noto/NotoSansCJK-Black.ttc"
-FONT_BOLD_PATH = "/usr/share/fonts/opentype/noto/NotoSansCJK-Bold.ttc"
+# 폰트 자동 탐색
+def find_font():
+    patterns = [
+        "/usr/share/fonts/**/NotoSansCJK*Black*",
+        "/usr/share/fonts/**/NotoSans*CJK*Black*",
+        "/usr/share/fonts/**/*CJK*Black*",
+        "/usr/share/fonts/**/*Gothic*Bold*",
+    ]
+    for p in patterns:
+        matches = glob.glob(p, recursive=True)
+        if matches:
+            return matches[0]
+    return None
+
+FONT = find_font()
+if not FONT:
+    print("폰트를 찾을 수 없습니다")
+    sys.exit(1)
+print(f"폰트: {FONT}")
+
 SCRIPT_DIR = Path(__file__).parent
 BASE_END = SCRIPT_DIR / "base_end.png"
 BASE_EVENT = SCRIPT_DIR / "base_event.png"
@@ -13,7 +31,7 @@ sm, sd, em, ed = map(int, sys.argv[1:5])
 
 # 기획전 종료
 base = Image.open(BASE_END).convert("RGB")
-font = ImageFont.truetype(FONT_PATH, 100)
+font = ImageFont.truetype(FONT, 100)
 text = f"{sm}.{sd} ~ {em}.{ed}"
 frame = base.copy()
 draw = ImageDraw.Draw(frame)
@@ -26,7 +44,7 @@ frame.save(out / "기획전_종료.gif", save_all=True, append_images=[base.copy
 
 # 안진 기획전
 base2 = Image.open(BASE_EVENT).convert("RGB")
-font2 = ImageFont.truetype(FONT_PATH, 55)
+font2 = ImageFont.truetype(FONT, 55)
 text2 = f"{sm}월 {sd}일 ~ {em}월 {ed}일"
 frame2 = base2.copy()
 draw2 = ImageDraw.Draw(frame2)
