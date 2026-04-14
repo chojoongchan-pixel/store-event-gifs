@@ -2,12 +2,14 @@ name: 매일 이벤트 GIF 자동 업데이트
 
 on:
   schedule:
-    - cron: '0 15 * * *'  # 매일 한국시간 자정 (UTC 15시)
-  workflow_dispatch:       # 수동 실행도 가능
+    - cron: '0 15 * * *'
+  workflow_dispatch:
 
 jobs:
   update-gif:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -23,6 +25,9 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y fonts-noto-cjk
+          echo "=== 설치된 폰트 목록 ==="
+          find /usr/share/fonts -name "*Noto*CJK*" -o -name "*noto*cjk*" | head -20
+          fc-list | grep -i "cjk" | head -10
 
       - name: GIF 생성
         run: |
@@ -30,13 +35,10 @@ jobs:
           TOMORROW=$(TZ=Asia/Seoul date -d "+1 day" +"%m %d")
           MONTH=$(echo $TOMORROW | awk '{print int($1)}')
           DAY=$(echo $TOMORROW | awk '{print int($2)}')
-          END_DATE=$(TZ=Asia/Seoul date -d "+1 day" +"%Y-%m-%d")
           START_DATE=$(TZ=Asia/Seoul date -d "+1 day -6 days" +"%Y-%m-%d")
           SM=$(date -d "$START_DATE" +"%m" | sed 's/^0//')
           SD=$(date -d "$START_DATE" +"%d" | sed 's/^0//')
-          EM=$MONTH
-          ED=$DAY
-          python3 actions_generate.py $SM $SD $EM $ED
+          python3 actions_generate.py $SM $SD $MONTH $DAY
 
       - name: Git push
         run: |
