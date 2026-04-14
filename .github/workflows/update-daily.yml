@@ -18,10 +18,10 @@ jobs:
 
       - name: GIF 생성
         run: |
-          TOMORROW=$(TZ=Asia/Seoul date -d "+1 day" +"%m %d")
+          TOMORROW=$(TZ=Asia/Seoul date -d "today" +"%m %d")
           MONTH=$(echo $TOMORROW | awk '{print int($1)}')
           DAY=$(echo $TOMORROW | awk '{print int($2)}')
-          START_DATE=$(TZ=Asia/Seoul date -d "+1 day -6 days" +"%Y-%m-%d")
+          START_DATE=$(TZ=Asia/Seoul date -d "today -6 days" +"%Y-%m-%d")
           SM=$(date -d "$START_DATE" +"%m" | sed 's/^0//')
           SD=$(date -d "$START_DATE" +"%d" | sed 's/^0//')
           python3 actions_generate.py $SM $SD $MONTH $DAY
