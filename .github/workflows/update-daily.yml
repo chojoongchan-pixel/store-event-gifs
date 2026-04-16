@@ -2,8 +2,8 @@ name: 매일 이벤트 GIF 자동 업데이트
 
 on:
   schedule:
-    - cron: '30 13 * * *'
-    timezone: 'Asia/Seoul'
+    - cron: '35 13 * * *'
+      timezone: Asia/Seoul
   workflow_dispatch:
 
 jobs:
@@ -19,9 +19,9 @@ jobs:
 
       - name: GIF 생성
         run: |
-          TOMORROW=$(TZ=Asia/Seoul date -d "today" +"%m %d")
-          MONTH=$(echo $TOMORROW | awk '{print int($1)}')
-          DAY=$(echo $TOMORROW | awk '{print int($2)}')
+          TODAY=$(TZ=Asia/Seoul date +"%m %d")
+          MONTH=$(echo $TODAY | awk '{print int($1)}')
+          DAY=$(echo $TODAY | awk '{print int($2)}')
           START_DATE=$(TZ=Asia/Seoul date -d "today -6 days" +"%Y-%m-%d")
           SM=$(date -d "$START_DATE" +"%m" | sed 's/^0//')
           SD=$(date -d "$START_DATE" +"%d" | sed 's/^0//')
