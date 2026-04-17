@@ -2,7 +2,7 @@ name: 매일 이벤트 GIF 자동 업데이트
 
 on:
   schedule:
-    - cron: '25 20 * * *'
+    - cron: '50 23 * * *'
       timezone: 'Asia/Seoul'
   workflow_dispatch:
 
@@ -19,10 +19,10 @@ jobs:
 
       - name: GIF 생성
         run: |
-          TODAY=$(TZ=Asia/Seoul date +"%m %d")
-          MONTH=$(echo $TODAY | awk '{print int($1)}')
-          DAY=$(echo $TODAY | awk '{print int($2)}')
-          START_DATE=$(TZ=Asia/Seoul date -d "today -6 days" +"%Y-%m-%d")
+          TOMORROW=$(TZ=Asia/Seoul date -d "+1 day" +"%m %d")
+          MONTH=$(echo $TOMORROW | awk '{print int($1)}')
+          DAY=$(echo $TOMORROW | awk '{print int($2)}')
+          START_DATE=$(TZ=Asia/Seoul date -d "+1 day -6 days" +"%Y-%m-%d")
           SM=$(date -d "$START_DATE" +"%m" | sed 's/^0//')
           SD=$(date -d "$START_DATE" +"%d" | sed 's/^0//')
           python3 actions_generate.py $SM $SD $MONTH $DAY
@@ -32,5 +32,5 @@ jobs:
           git config user.name "github-actions"
           git config user.email "actions@github.com"
           git add .
-          git diff --staged --quiet || git commit -m "자동 업데이트: $(TZ=Asia/Seoul date +%Y-%m-%d)"
+          git diff --staged --quiet || git commit -m "자동 업데이트: $(TZ=Asia/Seoul date -d '+1 day' +%Y-%m-%d)"
           git push
