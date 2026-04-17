@@ -64,7 +64,8 @@ def generate_event_gif(sm, sd, em, ed, output_path):
 def git_push(sm, sd, em, ed):
     os.chdir(REPO_DIR)
     msg = f"이벤트 날짜 변경: {sm}.{sd} ~ {em}.{ed}"
-    for cmd in [["git", "add", "."],
+    for cmd in [["git", "pull", "--rebase"],
+                ["git", "add", "."],
                 ["git", "commit", "-m", msg],
                 ["git", "push"]]:
         r = subprocess.run(cmd, capture_output=True, text=True)
