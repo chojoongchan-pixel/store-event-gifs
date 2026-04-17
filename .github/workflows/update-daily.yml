@@ -1,9 +1,6 @@
 name: 매일 이벤트 GIF 자동 업데이트
 
 on:
-  schedule:
-    - cron: '50 23 * * *'
-      timezone: 'Asia/Seoul'
   workflow_dispatch:
 
 jobs:
