@@ -61,12 +61,19 @@ def generate_event_gif(sm, sd, em, ed, output_path):
                duration=BLINK_DURATION, loop=0)
     print(f"  ✅ 안진_기획전.gif")
 
+def git_pull():
+    os.chdir(REPO_DIR)
+    r = subprocess.run(["git", "pull", "--rebase"], capture_output=True, text=True)
+    if r.returncode != 0:
+        print(f"  ⚠️  git pull 오류: {r.stderr.strip()}")
+        return False
+    return True
+
 def git_push(sm, sd, em, ed):
     os.chdir(REPO_DIR)
     msg = f"이벤트 날짜 변경: {sm}.{sd} ~ {em}.{ed}"
     for cmd in [["git", "add", "."],
                 ["git", "commit", "-m", msg],
-                ["git", "pull", "--rebase"],
                 ["git", "push"]]:
         r = subprocess.run(cmd, capture_output=True, text=True)
         if r.returncode != 0 and "nothing to commit" not in r.stdout:
@@ -103,15 +110,23 @@ def main():
     gif_dir = REPO_DIR / GIF_FOLDER
     gif_dir.mkdir(parents=True, exist_ok=True)
 
+    print("\n🔄 GitHub 최신 버전 가져오는 중...")
+    if not git_pull():
+        print("❌ pull 실패. 위의 오류 메시지를 확인해주세요.\n")
+        return
+
     print("\n📦 GIF 생성 중...")
     generate_end_gif(sm, sd, em, ed, gif_dir / "기획전_종료.gif")
     generate_event_gif(sm, sd, em, ed, gif_dir / "안진_기획전.gif")
 
     print("\n☁️  GitHub 업로드 중...")
-    git_push(sm, sd, em, ed)
+    success = git_push(sm, sd, em, ed)
 
     print(f"\n{'=' * 50}")
-    print("🎉 완료! 1~2분 후 상세페이지에 자동 반영됩니다.\n")
+    if success:
+        print("🎉 완료! 1~2분 후 상세페이지에 자동 반영됩니다.\n")
+    else:
+        print("❌ 업로드 실패. 위의 오류 메시지를 확인해주세요.\n")
 
 if __name__ == "__main__":
     main()
