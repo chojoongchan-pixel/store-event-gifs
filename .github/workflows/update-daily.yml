@@ -1,4 +1,4 @@
-name: 매일 이벤트 GIF 자동 업데이트
+name: 이벤트 GIF 자동 업데이트
 
 on:
   workflow_dispatch:
