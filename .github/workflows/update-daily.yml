@@ -2,6 +2,11 @@ name: update-gifs
 
 on:
   workflow_dispatch:
+    inputs:
+      dates:
+        description: '수동 날짜 (예: 10 19 10 25). 비워두면 자동 계산'
+        required: false
+        default: ''
 
 jobs:
   update-gif:
@@ -15,7 +20,13 @@ jobs:
         run: pip install Pillow
 
       - name: generate
+        env:
+          DATES: ${{ inputs.dates }}
         run: |
+          if [ -n "$DATES" ]; then
+            python3 actions_generate.py $DATES
+            exit 0
+          fi
           TOMORROW=$(TZ=Asia/Seoul date -d "+1 day" +"%m %d")
           MONTH=$(echo $TOMORROW | awk '{print int($1)}')
           DAY=$(echo $TOMORROW | awk '{print int($2)}')
