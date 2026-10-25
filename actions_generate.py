@@ -10,26 +10,41 @@ BASE_EVENT = SCRIPT_DIR / "base_event.png"
 
 sm, sd, em, ed = map(int, sys.argv[1:5])
 
+
+def fit_font(text, max_size, max_width):
+    """박스 안에 들어가도록 폰트 크기를 자동으로 줄임"""
+    size = max_size
+    while size > 20:
+        font = ImageFont.truetype(FONT, size)
+        l, t, r, b = font.getbbox(text)
+        if r - l <= max_width:
+            return font
+        size -= 2
+    return ImageFont.truetype(FONT, size)
+
+
 base = Image.open(BASE_END).convert("RGB")
-font = ImageFont.truetype(FONT, 100)
 text = f"{sm}.{sd} ~ {em}.{ed}"
+# 빨간 박스: x 114~745 (폭 631px) → 좌우 여백 35px씩
+font = fit_font(text, 100, 560)
 frame = base.copy()
 draw = ImageDraw.Draw(frame)
 bbox = draw.textbbox((0, 0), text, font=font)
 tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
-draw.text((429 - tw//2, 827 - th//2 - bbox[1]), text, fill=(253,253,253), font=font)
+draw.text((429 - tw//2 - bbox[0], 827 - th//2 - bbox[1]), text, fill=(253,253,253), font=font)
 out = SCRIPT_DIR / "gifs"
 out.mkdir(exist_ok=True)
 frame.save(out / "기획전_종료.gif", save_all=True, append_images=[base.copy()], duration=500, loop=0)
 
 base2 = Image.open(BASE_EVENT).convert("RGB")
-font2 = ImageFont.truetype(FONT, 55)
 text2 = f"{sm}월 {sd}일 ~ {em}월 {ed}일"
+# 검은 박스: x 81~783 (폭 702px)
+font2 = fit_font(text2, 55, 640)
 frame2 = base2.copy()
 draw2 = ImageDraw.Draw(frame2)
 bbox2 = draw2.textbbox((0, 0), text2, font=font2)
 tw2, th2 = bbox2[2] - bbox2[0], bbox2[3] - bbox2[1]
-draw2.text((432 - tw2//2, 850 - th2//2 - bbox2[1]), text2, fill=(253,253,253), font=font2)
+draw2.text((432 - tw2//2 - bbox2[0], 850 - th2//2 - bbox2[1]), text2, fill=(253,253,253), font=font2)
 frame2.save(out / "안진_기획전.gif", save_all=True, append_images=[base2.copy()], duration=500, loop=0)
 
 print(f"✅ {sm}.{sd} ~ {em}.{ed} 생성 완료")
